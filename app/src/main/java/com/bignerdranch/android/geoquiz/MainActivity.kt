@@ -12,9 +12,6 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-//    private lateinit var trueButton: Button
-//    private lateinit var falseButton: Button
-
     private val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -28,27 +25,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        trueButton = findViewById(R.id.true_button)
-//        falseButton = findViewById(R.id.false_button)
-
-//        trueButton.setOnClickListener { view: View ->
-//            //Toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show
-//            Snackbar.make(view, R.string.correct_toast, Snackbar.LENGTH_SHORT).show()
-//
-//        }
-//        falseButton.setOnClickListener { view: View ->
-//            //Toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show()
-//            Snackbar.make(view, R.string.incorrect_toast, Snackbar.LENGTH_SHORT).show()
-//        }
         binding.trueButton.setOnClickListener { view: View -> checkAnswer(true)}
         binding.falseButton.setOnClickListener { view: View -> checkAnswer(false)}
-
         binding.nextButton.setOnClickListener {
             currentIndex = (currentIndex + 1) % questionBank.size
+            updateQuestion()
+        }
+        binding.questionTextView.setOnClickListener{
+            currentIndex = (currentIndex+1) % questionBank.size
             updateQuestion()
         }
 
