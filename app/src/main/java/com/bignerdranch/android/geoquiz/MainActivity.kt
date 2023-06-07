@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
+    private var score = 0
     private var answeredQuestions = List(questionBank.size) {true}.toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,14 +32,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.trueButton.setOnClickListener {
-            checkAnswer(true)
-            answeredQuestions.add(currentIndex, false)
+            answeredQuestions[currentIndex] = false
             updateButtons()
+            checkAnswer(true)
         }
         binding.falseButton.setOnClickListener {
-            checkAnswer(false)
-            answeredQuestions.add(currentIndex, false)
+            answeredQuestions[currentIndex] = false
             updateButtons()
+            checkAnswer(false)
         }
 
 
@@ -100,16 +101,22 @@ class MainActivity : AppCompatActivity() {
         binding.trueButton.isEnabled = answeredQuestions[currentIndex]
         binding.falseButton.isEnabled = answeredQuestions[currentIndex]
     }
-
-
-
+    
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = questionBank[currentIndex].answer
         val messageResId = if (userAnswer == correctAnswer){
+            score += 1
             R.string.correct_toast
         }else{
             R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        if (!answeredQuestions.contains(true)){
+            val percentage = (score.toDouble() / questionBank.size) * 100
+            val roundedPercentage = "%.2f".format(percentage)
+            val message = "Your percentage is: $roundedPercentage%"
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
     }
 }
