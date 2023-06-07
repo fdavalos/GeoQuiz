@@ -3,12 +3,9 @@ package com.bignerdranch.android.geoquiz
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
-import com.bignerdranch.android.geoquiz.R.*
 import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
+
 
 private const val TAG = "MainActivity"
 
@@ -25,17 +22,30 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
+    private var answeredQuestions = List(questionBank.size) {true}.toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG,"onCreate(Bundle?) called")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.trueButton.setOnClickListener { view: View -> checkAnswer(true)}
-        binding.falseButton.setOnClickListener { view: View -> checkAnswer(false)}
+
+        binding.trueButton.setOnClickListener {
+            checkAnswer(true)
+            answeredQuestions.add(currentIndex, false)
+            updateButtons()
+        }
+        binding.falseButton.setOnClickListener {
+            checkAnswer(false)
+            answeredQuestions.add(currentIndex, false)
+            updateButtons()
+        }
+
+
         binding.nextButton.setOnClickListener {
             currentIndex = (currentIndex + 1) % questionBank.size
             updateQuestion()
+            updateButtons()
         }
         binding.questionTextView.setOnClickListener{
             currentIndex = (currentIndex+1) % questionBank.size
@@ -48,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 questionBank.size-1
             }
             updateQuestion()
+            updateButtons()
         }
 
 
@@ -78,20 +89,27 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         Log.d(TAG, "onDestroy() called")
     }
-    private fun updateQuestion(){
-        val questionTextRestId = questionBank[currentIndex].textRestId
-        binding.questionTextView.setText(questionTextRestId)
+    private fun updateQuestion() {
+
+            val questionTextRestId = questionBank[currentIndex].textRestId
+            binding.questionTextView.setText(questionTextRestId)
+
     }
+
+    private fun updateButtons(){
+        binding.trueButton.isEnabled = answeredQuestions[currentIndex]
+        binding.falseButton.isEnabled = answeredQuestions[currentIndex]
+    }
+
+
 
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = questionBank[currentIndex].answer
-
         val messageResId = if (userAnswer == correctAnswer){
             R.string.correct_toast
         }else{
             R.string.incorrect_toast
         }
-
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 }
