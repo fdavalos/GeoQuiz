@@ -1,8 +1,8 @@
 package com.bignerdranch.android.geoquiz
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-private const val TAG = "QuizViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val CURRENT_QUESTION_KEY = "CURRENT_QUESTION_KEY"
 
